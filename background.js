@@ -538,7 +538,7 @@ async function callFlowApi(tabId, rpcId, payload, { timeoutMs = 120000 } = {}) {
         getRpcPath()
       ]
     })
-  ))?.?.[0]?.result;
+  ))?.[0]?.result;
 
   if (!result) {
     const error = new Error("Flow tab lost — close the Flow tab, reopen it, and try again");
@@ -1607,7 +1607,7 @@ async function processBatch(options) {
   };
 
   const effectiveSettings = { ...settings };
-  const downloadQuality = isAuthenticated && subscriptionStatus === "active"
+  const downloadQuality = options.imageDownloadQuality || "standard"
     ? options.imageDownloadQuality || "standard"
     : "standard";
 
