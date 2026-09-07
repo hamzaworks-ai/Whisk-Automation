@@ -1,0 +1,72 @@
+{
+    "update_url": "https://clients2.google.com/service/update2/crx",
+    "manifest_version": 3,
+    "name": "Whisk Automator - Bulk AI Image Generation with Nano Banana 2 & Pro",
+    "description": "Whisk AI bulk image generator for Google Flow. Automate Whisk prompts, batch generate & auto download. Nano Banana 2 & Pro.",
+    "version": "2.1.7",
+    "icons": {
+        "16": "images/icon16.png",
+        "32": "images/icon32.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+    },
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqLES8Ksc+RmBRR0+C7gVUhmSDE1OJAQIS6olXKWUziVkwfMfDrtKE6wrGP6YKW0HoPFDc5YNyoMLz84l9FL+l9v3O/2XVVKMga0gsKdEj4tGGx+7cGh6ay7w/f6DQJiWeohvmhGf/6XW4zZ65aNgs5xDkG5taLRFYCt29K5nKZSaA4kJ6ow10QolB8KoXk7IQhIQh7nZA1BtwsvRA0Yj/uDLuDe0NVgItVUifo7xQWei7xeVilWGHP7VUxkQEptQ1G1g/+rwVxQhno3Vp5oHUG9Jp94xC8ce35EwAqTSRkKsviZPCqvnWAUd3D5dqeoxUnLe637IgxwUn4oBXIyOewIDAQAB",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "sidePanel",
+        "identity",
+        "tabs",
+        "downloads",
+        "scripting",
+        "offscreen"
+    ],
+    "host_permissions": [
+        "https://flow.google.com/*",
+        "https://aisandbox-pa.googleapis.com/*",
+        "https://gemini.google.com/*",
+        "https://chatgpt.com/*"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "images/*",
+                "flowInterceptor.js"
+            ],
+            "matches": [
+                "https://flow.google.com/*"
+            ]
+        }
+    ],
+    "action": {
+        "default_title": "Whisk Automator - Bulk AI Image Generation Toolkit for Whisk AI",
+        "default_icon": {
+            "16": "images/icon16.png",
+            "32": "images/icon32.png",
+            "48": "images/icon48.png",
+            "128": "images/icon128.png"
+        }
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    },
+    "background": {
+        "type": "module",
+        "service_worker": "background.js"
+    },
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://flow.google.com/*"
+            ],
+            "run_at": "document_start",
+            "js": [
+                "content-scripts/flow.js"
+            ],
+            "world": "ISOLATED"
+        }
+    ]
+}
