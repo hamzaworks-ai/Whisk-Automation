@@ -510,8 +510,7 @@ function AppHeader({
   darkMode,
   toggleDarkMode
 }) {
-  const isPro = subscriptionStatus?.status === "active" ||
-    subscriptionStatus?.status === "active_canceling";
+  const isPro = true;
 
   const initials = user?.displayName
     ? user.displayName.split(" ").map(name => name[0]).join("").toUpperCase().substring(0, 2)
@@ -584,13 +583,7 @@ function AppHeader({
                   initials
                 )}
               </div>
-              {isPro && (
-                <span className="absolute -bottom-1 -right-1 flex items-center justify-center w-4 h-4 rounded-full bg-[#FFD100] border-2 border-white shadow-md">
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="#111827" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                </span>
-              )}
+
             </button>
           )}
         </div>
@@ -2024,8 +2017,7 @@ function GenerateTab({
     autoExportCsv: false
   });
 
-  const isPro = subscriptionStatus?.status === "active" ||
-    subscriptionStatus?.status === "active_canceling";
+  const isPro = true;
 
   const modelMap = {
     GEM_PIX_2: "NB Pro",
@@ -2043,31 +2035,10 @@ function GenerateTab({
     chrome.storage.local.get(["flowSettings"], (result) => {
       if (result.flowSettings) {
         const loaded = { ...result.flowSettings };
-        // Downgrade if not Pro
-        if (!isPro) {
-          if (PRO_MODELS.includes(loaded.model)) {
-            loaded.model = DEFAULT_MODEL;
-          }
-          if (loaded.imageDownloadQuality === UPSCALE_2K) {
-            loaded.imageDownloadQuality = STANDARD_QUALITY;
-          }
-        }
         setSettings(prev => ({ ...prev, ...loaded }));
       }
     });
   }, [subscriptionStatus?.status]);
-
-  // Update settings when Pro status changes
-  useEffect(() => {
-    if (!isPro) {
-      if (PRO_MODELS.includes(settings.model)) {
-        updateSetting("model", DEFAULT_MODEL);
-      }
-      if (settings.imageDownloadQuality === UPSCALE_2K) {
-        updateSetting("imageDownloadQuality", STANDARD_QUALITY);
-      }
-    }
-  }, [isPro, settings.model, settings.imageDownloadQuality]);
 
   const updateSetting = (key, value) => {
     const newSettings = { ...settings, [key]: value };
@@ -2387,8 +2358,7 @@ function SettingsTab({ user, subscriptionStatus }) {
     autoExportCsv: false
   });
 
-  const isPro = subscriptionStatus?.status === "active" ||
-    subscriptionStatus?.status === "active_canceling";
+  const isPro = true;
 
   // Load settings
   useEffect(() => {
@@ -2451,31 +2421,19 @@ function SettingsTab({ user, subscriptionStatus }) {
           <div className="flex gap-1.5">
             {modelOptions.map((option) => {
               const isSelected = settings.model === option.value;
-              const isProModel = PRO_MODELS.includes(option.value);
-              const isDisabled = isProModel && !isPro;
 
               return (
                 <button
                   key={option.value}
                   onClick={() => {
-                    if (isDisabled) {
-                      showToast("Nano Banana models are available for Pro users only. Upgrade to unlock NB 2 and NB Pro.", "error");
-                      return;
-                    }
                     updateSetting("model", option.value);
                   }}
-                  title={isDisabled ? "Nano Banana models are available for Pro users only. Upgrade to unlock NB 2 and NB Pro." : undefined}
                   className={`relative flex-1 py-2 text-xs rounded-xl border font-medium transition-all ${isSelected
                     ? "bg-[#FFD100] border-[#FFD100] text-[#111827] shadow-sm"
-                    : isDisabled
-                      ? "bg-gray-50 border-gray-200 text-gray-400 dark:bg-white/[0.03] dark:border-white/10 dark:text-gray-500"
-                      : "bg-white border-gray-300 text-gray-700 hover:border-[#FFD100] dark:bg-white/[0.06] dark:border-white/15 dark:text-gray-300"
+                    : "bg-white border-gray-300 text-gray-700 hover:border-[#FFD100] dark:bg-white/[0.06] dark:border-white/15 dark:text-gray-300"
                     }`}
                 >
                   {option.label}
-                  {isDisabled && (
-                    <span className="absolute -top-1.5 -right-1 text-[9px] font-bold px-1 py-0.5 rounded-full bg-[#111827] text-[#FFD100] leading-none">PRO</span>
-                  )}
                 </button>
               );
             })}
@@ -2763,31 +2721,19 @@ function SettingsTab({ user, subscriptionStatus }) {
           <div className="flex gap-1.5">
             {qualityOptions.map((option) => {
               const isSelected = settings.imageDownloadQuality === option.value;
-              const isProQuality = option.value === "2k";
-              const isDisabled = isProQuality && !isPro;
 
               return (
                 <button
                   key={option.value}
                   onClick={() => {
-                    if (isDisabled) {
-                      showToast("2K upscaling is available for Pro users only. Upgrade to download in 2K.", "error");
-                      return;
-                    }
                     updateSetting("imageDownloadQuality", option.value);
                   }}
-                  title={isDisabled ? "2K upscaling is available for Pro users only. Upgrade to download in 2K." : undefined}
                   className={`relative flex-1 py-2 text-xs rounded-xl border font-medium transition-all ${isSelected
                     ? "bg-[#FFD100] border-[#FFD100] text-[#111827] shadow-sm"
-                    : isDisabled
-                      ? "bg-gray-50 border-gray-200 text-gray-400 dark:bg-white/[0.03] dark:border-white/10 dark:text-gray-500"
-                      : "bg-white border-gray-300 text-gray-700 hover:border-[#FFD100] dark:bg-white/[0.06] dark:border-white/15 dark:text-gray-300"
+                    : "bg-white border-gray-300 text-gray-700 hover:border-[#FFD100] dark:bg-white/[0.06] dark:border-white/15 dark:text-gray-300"
                     }`}
                 >
                   {option.label}
-                  {isDisabled && (
-                    <span className="absolute -top-1.5 -right-1 text-[9px] font-bold px-1 py-0.5 rounded-full bg-[#111827] text-[#FFD100] leading-none">PRO</span>
-                  )}
                 </button>
               );
             })}
