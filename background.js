@@ -538,7 +538,9 @@ async function callFlowApi(tabId, rpcId, payload, { timeoutMs = 120000 } = {}) {
         getRpcPath()
       ]
     })
-  ))?.[0]?.result;
+  );
+  
+  const result = response && response[0] ? response[0].result : null;
 
   if (!result) {
     const error = new Error("Flow tab lost — close the Flow tab, reopen it, and try again");
@@ -719,16 +721,17 @@ async function updateTabState(tabId) {
 }
 
 async function getCurrentProjectId(tabId) {
-  const result = (await chrome.scripting.executeScript({
+  const response = await chrome.scripting.executeScript({
     target: { tabId },
     world: "MAIN",
     func: () => {
       const match = window.location.href.match(/project\/([a-f0-9-]+)/);
       return match ? match[1] : null;
     }
-  }).catch(() => null))?.[0]?.result || null;
-
-  return result;
+  }).catch(() => null);
+  
+  const result = response && response[0] ? response[0].result : null;
+  return result || null;
 }
 
 async function getFlowPageState(tabId) {
@@ -2001,7 +2004,7 @@ async function openProject(projectId) {
 
   connectionState.status = "connecting";
   connectionState.flowTabId = tabId;
-  connectionState.hasProject: true;
+  connectionState.hasProject = true;
   connectionState.projectId = projectId;
   connectionState.lastCheck = Date.now();
   broadcastConnectionState();
